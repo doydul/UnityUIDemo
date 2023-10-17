@@ -14,11 +14,13 @@ namespace UIDemo {
     [SerializeField] Color _selectColor;
     [SerializeField] Color _disabledColor;
     [SerializeField] bool _disabled;
-    [SerializeField] UnityEvent _onClick;
+
+    public UnityEvent OnClick;
     
     private Image _image;
     private bool _hovering;
     private bool _clicking;
+    private PhysicsBasedAnimator _animator;
 
     void Awake() {
       _image = GetComponent<Image>();
@@ -63,10 +65,18 @@ namespace UIDemo {
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-      if (!_disabled) _onClick.Invoke();
+      if (!_disabled) OnClick.Invoke();
+      if (_animator != null) {
+        var raycast = eventData.pointerPressRaycast;
+        _animator.Nudge(raycast.worldPosition, -raycast.worldNormal);
+      }
     }
 
     //
+
+    public void SetAnimator(PhysicsBasedAnimator animator) {
+      _animator = animator;
+    }
 
     public void Disable() {
       _disabled = true;
