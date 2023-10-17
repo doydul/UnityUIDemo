@@ -2,11 +2,15 @@ using UnityEngine;
 
 namespace UIDemo {
 
+  [RequireComponent(typeof(PhysicsBasedAnimator))]
   public class PhysicsBasedMenu : MonoBehaviour {
+    private PhysicsBasedAnimator _animator;
     private PhysicsBasedMenuPanel[] _panels;
 
     void Awake() {
+      _animator = GetComponent<PhysicsBasedAnimator>();
       _panels = GetComponentsInChildren<PhysicsBasedMenuPanel>();
+      SetNudgeCallbacks();
     }
 
     void Start() {
@@ -31,6 +35,12 @@ namespace UIDemo {
       }
       if (Input.GetKeyDown("6")) {
         ActivatePanel(5);
+      }
+    }
+
+    private void SetNudgeCallbacks() {
+      foreach (var button in GetComponentsInChildren<DemoButton>()) {
+        button.SetAnimator(_animator);
       }
     }
 
