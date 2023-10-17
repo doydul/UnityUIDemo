@@ -792,7 +792,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 76efd222974a23048933f359e03f61e8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1946,7 +1946,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3711509434558738635, guid: d542304797a1cc34dac317de9a173228, type: 3}
       propertyPath: m_Name
-      value: MenuButton
+      value: BackButton
       objectReference: {fileID: 0}
     - target: {fileID: 4485441658378227439, guid: d542304797a1cc34dac317de9a173228, type: 3}
       propertyPath: OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -2059,6 +2059,10 @@ PrefabInstance:
     - target: {fileID: 9046914295816886700, guid: d542304797a1cc34dac317de9a173228, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9079443917561896476, guid: d542304797a1cc34dac317de9a173228, type: 3}
+      propertyPath: m_text
+      value: Back
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
