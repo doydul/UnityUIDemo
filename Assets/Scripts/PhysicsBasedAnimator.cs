@@ -16,12 +16,20 @@ namespace UIDemo {
     [Tooltip("The strength of the force that pushes the object torwards it's desired position")]
     [SerializeField] float _translationalSpringForce = 0.5f;
 
+    [Tooltip("The amount of resistance applied to scale changes")]
+    [SerializeField] float _scaleDamping = 0.05f;
+
+    [Tooltip("The speed at which the scale will change to match the desired scale")]
+    [SerializeField] float _scaleSpringForce = 0.02f;
+
     [Tooltip("The relative magnitude of the impulse applied when the object is 'nudged'")]
     [SerializeField] float _nudgeStrength = 1f;
 
     private Rigidbody _rigidbody;
     private Vector3 _desiredPosition;
     private Vector3 _desiredFacing;
+    private Vector3 _desiredScale;
+    private Vector3 _scaleVelocity;
     private Transform _facingTransform;
     private Vector3 _originalUp;
     private Vector3 _originalForward;
@@ -29,15 +37,19 @@ namespace UIDemo {
     private Quaternion _arcFromCurrentFacingToDesiredFacing => Quaternion.FromToRotation(transform.forward, _desiredFacing);
     private Vector3 _vectorFromCurrentPositionToDesiredPosition => _desiredPosition - transform.position;
 
-    void Start() {
+    void Awake() {
       _desiredPosition = transform.position;
       _desiredFacing = transform.forward;
+      _desiredScale = transform.localScale;
       _originalUp = transform.up;
       _originalForward = transform.forward;
       _rigidbody = GetComponent<Rigidbody>();
       _rigidbody.drag = _translationalDamping;
       _rigidbody.angularDrag = _rotationalDamping;
       _rigidbody.useGravity = false;
+
+      transform.rotation = Random.rotation;
+      transform.localScale = new Vector3(0, 0, 0);
     }
 
     void FixedUpdate() {
@@ -48,6 +60,7 @@ namespace UIDemo {
         ApplyTorque(transform.forward, _desiredFacing);
       }
       ApplyForce();
+      AdjustScale();
     }
 
     private void ApplyTorque(Vector3 from, Vector3 to) {
@@ -60,6 +73,13 @@ namespace UIDemo {
     private void ApplyForce() {
       var delta = _desiredPosition - transform.position;
       _rigidbody.AddForce(delta * _translationalSpringForce);
+    }
+
+    private void AdjustScale() {
+      var delta = _desiredScale - transform.localScale;
+      _scaleVelocity += delta * _scaleSpringForce;
+      _scaleVelocity *= 1 - _scaleDamping;
+      transform.localScale += _scaleVelocity;
     }
 
     //

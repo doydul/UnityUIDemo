@@ -20,7 +20,7 @@ namespace UIDemo {
     private bool _hovering;
     private bool _clicking;
 
-    void Start() {
+    void Awake() {
       _image = GetComponent<Image>();
       SetColor();
     }

@@ -5,29 +5,46 @@ namespace UIDemo {
   public class PhysicsBasedMenu : MonoBehaviour {
     private PhysicsBasedMenuPanel[] _panels;
 
-    void Start() {
+    void Awake() {
       _panels = GetComponentsInChildren<PhysicsBasedMenuPanel>();
+    }
+
+    void Start() {
+      ActivatePanel(3);
     }
 
     void Update() {
       if (Input.GetKeyDown("1")) {
-        _panels[0].Activate();
+        ActivatePanel(0);
       }
       if (Input.GetKeyDown("2")) {
-        _panels[1].Activate();
+        ActivatePanel(1);
       }
       if (Input.GetKeyDown("3")) {
-        _panels[2].Activate();
+        ActivatePanel(2);
       }
       if (Input.GetKeyDown("4")) {
-        _panels[3].Activate();
+        ActivatePanel(3);
       }
       if (Input.GetKeyDown("5")) {
-        _panels[4].Activate();
+        ActivatePanel(4);
       }
       if (Input.GetKeyDown("6")) {
-        _panels[5].Activate();
+        ActivatePanel(5);
       }
+    }
+
+    //
+
+    public void DeactivateAll() {
+      foreach (var panel in _panels) {
+        panel.Deactivate();
+      }
+    }
+
+    public void ActivatePanel(int panelIndex) {
+      DeactivateAll();
+      _panels[panelIndex].Activate();
     }
   }
 }
