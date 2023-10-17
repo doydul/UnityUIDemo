@@ -7,14 +7,26 @@ namespace UIDemo {
 
     public Vector3 Facing { get; private set; }
 
-    void Start() {
+    private DemoButton[] _buttons;
+
+    void Awake() {
       Facing = transform.forward;
+      _buttons = GetComponentsInChildren<DemoButton>();
     }
 
     //
 
     public void Activate() {
-        _animator.Face(transform);
+      _animator.Face(transform);
+      foreach (var button in _buttons) {
+        button.Enable();
+      }
+    }
+
+    public void Deactivate() {
+      foreach (var button in _buttons) {
+        button.Disable();
+      }
     }
   }
 }
