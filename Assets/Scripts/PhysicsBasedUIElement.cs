@@ -6,8 +6,8 @@ using System.Collections.Generic;
 namespace UIDemo {
 
   public abstract class PhysicsBasedUIElement : Selectable {
-    [SerializeField] float _springForce = 0.1f;
-    [SerializeField] float _damping = 0.1f;
+    [SerializeField] protected float _springForce = 0.1f;
+    [SerializeField] protected float _damping = 0.1f;
 
     private Dictionary<string, AnimatingAttribute> _animatingAttributes;
 
@@ -15,7 +15,7 @@ namespace UIDemo {
       _animatingAttributes = new Dictionary<string, AnimatingAttribute>();
     }
 
-    void Update() {
+    void FixedUpdate() {
       foreach (var animAttr in _animatingAttributes.Values) {
         animAttr.Update();
       }
@@ -43,6 +43,10 @@ namespace UIDemo {
         _velocity *= 1 - _damping;
         _changeValueCallback(_currentValueCallback() + _velocity);
       }
+
+      public void Nudge(float impulse) {
+        _velocity += impulse;
+      }
     }
 
     //
@@ -55,6 +59,19 @@ namespace UIDemo {
         currentValueCallback: currentValueCallback,
         changeValueCallback: changeValueCallback
       );
+    }
+
+    protected void Nudge(string attrName, float nudgeStrength, Func<float> currentValueCallback, Action<float> changeValueCallback, float springForce = 0, float damping = 0) {
+      if (!_animatingAttributes.ContainsKey(attrName)) {
+        _animatingAttributes[attrName] = new AnimatingAttribute(
+          desiredValue: currentValueCallback(),
+          springForce: springForce <= 0 ? _springForce : springForce,
+          damping: damping <= 0 ? _damping : damping,
+          currentValueCallback: currentValueCallback,
+          changeValueCallback: changeValueCallback
+        );
+      }
+      _animatingAttributes[attrName].Nudge(nudgeStrength);
     }
   }
 }
