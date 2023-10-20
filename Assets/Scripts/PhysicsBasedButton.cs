@@ -15,11 +15,6 @@ namespace UIDemo {
         () => { return transform.localScale.x; },
         (value) => { transform.localScale = new Vector3(value, value, value); }
       );
-      Nudge("scale",
-        _scaleStrength,
-        () => { return transform.localScale.x; },
-        (value) => { transform.localScale = new Vector3(value, value, value); }
-      );
       Nudge("rotation",
         Random.value * _rotationStrength * 2 - _rotationStrength,
         () => { Debug.Log(Mathf.Asin(transform.up.x) * Mathf.Rad2Deg); return Mathf.Asin(transform.up.x) * Mathf.Rad2Deg; },
