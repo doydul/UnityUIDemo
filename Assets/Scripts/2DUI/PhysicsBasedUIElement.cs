@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
 using System.Collections.Generic;
 
 namespace UIDemo {
 
-  public abstract class PhysicsBasedUIElement : Selectable {
+  public abstract class PhysicsBasedUIElement : UIBehaviour {
     [SerializeField] protected float _springForce = 0.1f;
     [SerializeField] protected float _damping = 0.1f;
 
@@ -37,6 +38,14 @@ namespace UIDemo {
         _changeValueCallback = changeValueCallback;
       }
 
+      public float GetVelocity() {
+        return _velocity;
+      }
+
+      public void SetVelocity(float value) {
+        _velocity = value;
+      }
+
       public void Update() {
         var delta = _desiredValue - _currentValueCallback();
         _velocity += delta * _springForce;
@@ -47,18 +56,26 @@ namespace UIDemo {
       public void Nudge(float impulse) {
         _velocity += impulse;
       }
+
+      public void AdjustDesiredValue(float value) {
+        _desiredValue = value;
+      }
     }
 
     //
 
     protected void Animate(string attrName, float desiredValue, Func<float> currentValueCallback, Action<float> changeValueCallback, float springForce = 0, float damping = 0) {
-      _animatingAttributes[attrName] = new AnimatingAttribute(
-        desiredValue: desiredValue,
-        springForce: springForce <= 0 ? _springForce : springForce,
-        damping: damping <= 0 ? _damping : damping,
-        currentValueCallback: currentValueCallback,
-        changeValueCallback: changeValueCallback
-      );
+      if (!_animatingAttributes.ContainsKey(attrName)) {
+        _animatingAttributes[attrName] = new AnimatingAttribute(
+          desiredValue: desiredValue,
+          springForce: springForce <= 0 ? _springForce : springForce,
+          damping: damping <= 0 ? _damping : damping,
+          currentValueCallback: currentValueCallback,
+          changeValueCallback: changeValueCallback
+        );
+      } else {
+        _animatingAttributes[attrName].AdjustDesiredValue(desiredValue);
+      }
     }
 
     protected void Nudge(string attrName, float nudgeStrength, Func<float> currentValueCallback, Action<float> changeValueCallback, float springForce = 0, float damping = 0) {
@@ -72,6 +89,19 @@ namespace UIDemo {
         );
       }
       _animatingAttributes[attrName].Nudge(nudgeStrength);
+    }
+
+    protected float GetVelocity(string attrName) {
+      if (_animatingAttributes.ContainsKey(attrName)) {
+        return _animatingAttributes[attrName].GetVelocity();
+      }
+      return 0;
+    }
+
+    protected void SetVelocity(string attrName, float value) {
+      if (_animatingAttributes.ContainsKey(attrName)) {
+        _animatingAttributes[attrName].SetVelocity(value);
+      }
     }
   }
 }
