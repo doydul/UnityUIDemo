@@ -30,7 +30,7 @@ namespace UIDemo {
       );
       Nudge("rotation",
         Random.value * _rotationStrength * 2 - _rotationStrength,
-        () => { Debug.Log(Mathf.Asin(transform.up.x) * Mathf.Rad2Deg); return Mathf.Asin(transform.up.x) * Mathf.Rad2Deg; },
+        () => { return Mathf.Asin(transform.up.x) * Mathf.Rad2Deg; },
         (value) => { transform.rotation = Quaternion.Euler(0, 0, -value); }
       );
     }
